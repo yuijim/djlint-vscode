@@ -13,6 +13,13 @@ export class Linter {
     /^<filename>(?<filename>.*)<\/filename><line>(?<line>\d+):(?<column>\d+)<\/line><code>(?<code>.+)<\/code><message>(?<message>.+)<\/message>$/gmu;
   static readonly #oldOutputRegex =
     /^(?<code>[A-Z]+\d+)\s+(?<line>\d+):(?<column>\d+)\s+(?<message>.+)$/gmu;
+  static readonly #severities: ReadonlyMap<string, vscode.DiagnosticSeverity> =
+    new Map([
+      ["error", vscode.DiagnosticSeverity.Error],
+      ["warning", vscode.DiagnosticSeverity.Warning],
+      ["information", vscode.DiagnosticSeverity.Information],
+      ["hint", vscode.DiagnosticSeverity.Hint],
+    ]);
   readonly #collection: vscode.DiagnosticCollection;
   readonly #context: vscode.ExtensionContext;
   readonly #outputChannel: vscode.LogOutputChannel;
@@ -103,6 +110,9 @@ export class Linter {
       this.#runningControllers.delete(key);
     }
 
+    const severity =
+      Linter.#severities.get(config.get<string>("diagnosticSeverity") ?? "") ??
+      vscode.DiagnosticSeverity.Error;
     const diags = [];
     const baseRegex = config.get<boolean>("useNewLinterOutputParser")
       ? Linter.#outputRegex
@@ -116,7 +126,7 @@ export class Linter {
       const column = Number.parseInt(groups["column"]);
       const range = new vscode.Range(line, column, line, column);
       const message = `${groups["message"]} (${groups["code"]})`;
-      const diag = new vscode.Diagnostic(range, message);
+      const diag = new vscode.Diagnostic(range, message, severity);
       diags.push(diag);
     }
     this.#collection.set(document.uri, diags);

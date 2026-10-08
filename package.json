@@ -88,6 +88,18 @@
           "default": [],
           "markdownDescription": "Indent custom HTML tags, for example `<mjml>`, `<simple-greeting>` or `<mj-\\w+>`. Requires djLint ≥ 1.25."
         },
+        "djlint.diagnosticSeverity": {
+          "type": "string",
+          "enum": [
+            "error",
+            "warning",
+            "information",
+            "hint"
+          ],
+          "default": "error",
+          "scope": "language-overridable",
+          "markdownDescription": "Severity of the problems reported by the djLint linter. Lower it to `warning`, `information` or `hint` to treat djLint findings as suggestions rather than errors."
+        },
         "djlint.enableLinting": {
           "type": "boolean",
           "default": false,
