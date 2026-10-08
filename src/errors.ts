@@ -103,6 +103,19 @@ export function checkErrors(
       // eslint-disable-next-line @typescript-eslint/only-throw-error
       throw e;
     }
+
+    /*
+     * A non-empty stdout on exit code 1 means djLint did its job: it exits with
+     * 1 both when the linter finds problems and when the formatter would change
+     * the file. Whatever is on stderr is only noise then (e.g. DeprecationWarnings
+     * from djLint's dependencies), so log it instead of showing an error message.
+     */
+    if (e.exitCode === 1 && e.stdout) {
+      outputChannel.warn(
+        `djLint exited with code 1 and wrote to stderr, using its stdout anyway:\n${e.stderr}`,
+      );
+      return e;
+    }
   }
 
   if (!e.isCanceled) {

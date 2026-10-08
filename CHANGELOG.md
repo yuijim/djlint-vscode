@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Do not show an error notification when djLint exits with code 1 but still produces output, e.g. when Python prints `DeprecationWarning`s from djLint's dependencies to stderr. The stderr output is written to the djLint output channel instead.
+
 ## [2026.9.0] - 2026-09-20
 
 - Add settings for the options added in djLint v1.45: `djlint.keepBrInline` (`--keep-br-inline`), `djlint.nameEndblocks` (`--name-endblocks`), `djlint.noEntityFormatting` (`--no-entity-formatting`), `djlint.noIndentInnerHtml` (`--no-indent-inner-html`), `djlint.quoteStyle` (`--quote-style`) and `djlint.sortAttributes` (`--sort-attributes`).
